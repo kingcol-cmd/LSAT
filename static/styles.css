@@ -1,0 +1,106 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6fb;
+  color: #182235;
+}
+
+.container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem 2rem;
+}
+
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  margin-top: 0.35rem;
+  padding: 0.55rem;
+  border: 1px solid #c6cedd;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+textarea {
+  min-height: 90px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.8rem;
+}
+
+button {
+  background: #2f66d0;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.error {
+  background: #ffe5e5;
+  color: #a10000;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.75rem;
+}
+
+th,
+td {
+  border: 1px solid #d6ddeb;
+  padding: 0.45rem;
+  text-align: left;
+}
+
+thead {
+  background: #eef3ff;
+}
+
+
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.owl-logo {
+  width: 78px;
+  min-width: 78px;
+}
+
+.owl-logo svg {
+  display: block;
+}
+
+.owl-bg { fill: #1f3d7a; }
+.owl-face { fill: #f7f3e9; }
+.owl-eye { fill: #ffffff; }
+.owl-pupil { fill: #1a2233; }
+.owl-beak { fill: #e9a93a; }
+.owl-ear { fill: #2f66d0; }
