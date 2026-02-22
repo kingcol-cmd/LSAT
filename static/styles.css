@@ -80,3 +80,27 @@ td {
 thead {
   background: #eef3ff;
 }
+
+
+.title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin-bottom: 0.8rem;
+}
+
+.owl-logo {
+  width: 78px;
+  min-width: 78px;
+}
+
+.owl-logo svg {
+  display: block;
+}
+
+.owl-bg { fill: #1f3d7a; }
+.owl-face { fill: #f7f3e9; }
+.owl-eye { fill: #ffffff; }
+.owl-pupil { fill: #1a2233; }
+.owl-beak { fill: #e9a93a; }
+.owl-ear { fill: #2f66d0; }

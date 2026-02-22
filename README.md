@@ -8,6 +8,9 @@ This project provides a lightweight full-stack app for logging LSAT Logical Reas
   - `stimulus`
   - `question_stem`
   - `chosen_answer`
+  - `chosen_answer_text`
+  - `correct_answer`
+  - `correct_answer_text`
   - `correct_answer`
   - optional `question_type`
 - Backend API endpoint to analyze attempts and return:
@@ -55,6 +58,9 @@ Then open `http://localhost:5000`.
   "stimulus": "A recent city study found that neighborhoods with more trees have lower summer electricity use. Therefore, planting trees in all neighborhoods will reduce citywide electricity costs.",
   "question_stem": "Which one of the following, if true, most strengthens the argument?",
   "chosen_answer": "B",
+  "chosen_answer_text": "Planting trees is expensive, so the city should avoid the policy.",
+  "correct_answer": "D",
+  "correct_answer_text": "Neighborhoods with more trees in the study were similar in income and building age, limiting confounds.",
   "correct_answer": "D",
   "question_type": "Strengthen"
 }

@@ -14,6 +14,7 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "attempts.db"
 STATIC_CSS = (BASE_DIR / "static" / "styles.css").read_text(encoding="utf-8")
 
+REQUIRED_FIELDS = ["stimulus", "question_stem", "chosen_answer", "chosen_answer_text", "correct_answer", "correct_answer_text"]
 REQUIRED_FIELDS = ["stimulus", "question_stem", "chosen_answer", "correct_answer"]
 VALID_ANSWER_CHOICES = {"A", "B", "C", "D", "E"}
 
@@ -116,6 +117,10 @@ def validate_payload(payload: dict[str, Any]) -> tuple[bool, str | None]:
     correct = str(payload.get("correct_answer", "")).strip().upper()
     if chosen not in VALID_ANSWER_CHOICES or correct not in VALID_ANSWER_CHOICES:
         return False, "Answer choices must be one of: A, B, C, D, E."
+    if len(str(payload.get("chosen_answer_text", "")).strip()) < 3:
+        return False, "chosen_answer_text must include the actual answer content."
+    if len(str(payload.get("correct_answer_text", "")).strip()) < 3:
+        return False, "correct_answer_text must include the actual answer content."
     return True, None
 
 
@@ -281,6 +286,26 @@ def page(title: str, body: str) -> str:
 def render_index(error: str = "", previous: dict[str, Any] | None = None) -> str:
     prev = previous or {}
     eblock = f"<div class='error'>{html.escape(error)}</div>" if error else ""
+    return page("LSAT Logical Reasoning Review Owl", f"""
+    <header class='title-wrap'>
+      <div class='owl-logo' aria-hidden='true'>
+        <svg viewBox='0 0 120 120' role='img'>
+          <circle cx='60' cy='60' r='56' class='owl-bg'/>
+          <ellipse cx='60' cy='68' rx='38' ry='30' class='owl-face'/>
+          <circle cx='45' cy='58' r='12' class='owl-eye'/>
+          <circle cx='75' cy='58' r='12' class='owl-eye'/>
+          <circle cx='45' cy='58' r='5' class='owl-pupil'/>
+          <circle cx='75' cy='58' r='5' class='owl-pupil'/>
+          <polygon points='60,62 52,76 68,76' class='owl-beak'/>
+          <path d='M30 46 L45 28 L52 46 Z' class='owl-ear'/>
+          <path d='M90 46 L75 28 L68 46 Z' class='owl-ear'/>
+        </svg>
+      </div>
+      <div>
+        <h1>LSAT Logical Reasoning Review Owl</h1>
+        <p>Submit your LR attempt to get a reasoning diagnosis and guided questions.</p>
+      </div>
+    </header>
     return page("LSAT LR Coach", f"""
     <h1>LSAT LR Attempt Intake</h1>
     <p>Submit your LR attempt to get a reasoning diagnosis and guided questions.</p>
@@ -290,6 +315,10 @@ def render_index(error: str = "", previous: dict[str, Any] | None = None) -> str
       <label>Stimulus *<textarea name='stimulus' required>{html.escape(str(prev.get("stimulus", "")))}</textarea></label>
       <label>Question Stem *<textarea name='question_stem' required>{html.escape(str(prev.get("question_stem", "")))}</textarea></label>
       <div class='row'>
+        <label>Chosen Answer Letter *<input name='chosen_answer' maxlength='1' required value='{html.escape(str(prev.get("chosen_answer", "")))}' placeholder='A-E'></label>
+        <label>Chosen Answer Text *<input name='chosen_answer_text' required value='{html.escape(str(prev.get("chosen_answer_text", "")))}' placeholder='Paste the chosen answer text'></label>
+        <label>Correct Answer Letter *<input name='correct_answer' maxlength='1' required value='{html.escape(str(prev.get("correct_answer", "")))}' placeholder='A-E'></label>
+        <label>Correct Answer Text *<input name='correct_answer_text' required value='{html.escape(str(prev.get("correct_answer_text", "")))}' placeholder='Paste the correct answer text'></label>
         <label>Chosen Answer *<input name='chosen_answer' maxlength='1' required value='{html.escape(str(prev.get("chosen_answer", "")))}' placeholder='A-E'></label>
         <label>Correct Answer *<input name='correct_answer' maxlength='1' required value='{html.escape(str(prev.get("correct_answer", "")))}' placeholder='A-E'></label>
         <label>Question Type<input name='question_type' value='{html.escape(str(prev.get("question_type", "")))}' placeholder='Strengthen / Weaken / Flaw'></label>
@@ -316,6 +345,8 @@ def render_results(attempt: dict[str, Any]) -> str:
     <section class='card'><h2>Logic Breakdown</h2><ul>{logic}</ul></section>
     <section class='card'><h2>Diagnosis</h2>
       <p><strong>Trap pattern:</strong> {html.escape(a['trap_answer_pattern'])}</p>
+      <p><strong>Chosen answer:</strong> {html.escape(attempt['payload'].get('chosen_answer',''))} — {html.escape(attempt['payload'].get('chosen_answer_text',''))}</p>
+      <p><strong>Correct answer:</strong> {html.escape(attempt['payload'].get('correct_answer',''))} — {html.escape(attempt['payload'].get('correct_answer_text',''))}</p>
       <p><strong>Why wrong answer felt attractive:</strong> {html.escape(a['diagnosis']['why_wrong_answer_attractive'])}</p>
       <p><strong>Why correct answer wins:</strong> {html.escape(a['diagnosis']['why_correct_answer_wins'])}</p>
     </section>
@@ -475,6 +506,9 @@ class Handler(BaseHTTPRequestHandler):
                 "stimulus": form.get("stimulus", ""),
                 "question_stem": form.get("question_stem", ""),
                 "chosen_answer": form.get("chosen_answer", ""),
+                "chosen_answer_text": form.get("chosen_answer_text", ""),
+                "correct_answer": form.get("correct_answer", ""),
+                "correct_answer_text": form.get("correct_answer_text", ""),
                 "correct_answer": form.get("correct_answer", ""),
                 "question_type": form.get("question_type", ""),
             }
