@@ -15,6 +15,7 @@ DB_PATH = BASE_DIR / "attempts.db"
 STATIC_CSS = (BASE_DIR / "static" / "styles.css").read_text(encoding="utf-8")
 
 REQUIRED_FIELDS = ["stimulus", "question_stem", "chosen_answer", "chosen_answer_text", "correct_answer", "correct_answer_text"]
+REQUIRED_FIELDS = ["stimulus", "question_stem", "chosen_answer", "correct_answer"]
 VALID_ANSWER_CHOICES = {"A", "B", "C", "D", "E"}
 
 TRAP_PATTERNS = {
@@ -305,6 +306,9 @@ def render_index(error: str = "", previous: dict[str, Any] | None = None) -> str
         <p>Submit your LR attempt to get a reasoning diagnosis and guided questions.</p>
       </div>
     </header>
+    return page("LSAT LR Coach", f"""
+    <h1>LSAT LR Attempt Intake</h1>
+    <p>Submit your LR attempt to get a reasoning diagnosis and guided questions.</p>
     {eblock}
     <form method='post' action='/submit' class='card'>
       <label>Session ID (for review history)<input name='session_id' value='{html.escape(str(prev.get("session_id", "")))}' placeholder='e.g., student-123'></label>
@@ -315,6 +319,8 @@ def render_index(error: str = "", previous: dict[str, Any] | None = None) -> str
         <label>Chosen Answer Text *<input name='chosen_answer_text' required value='{html.escape(str(prev.get("chosen_answer_text", "")))}' placeholder='Paste the chosen answer text'></label>
         <label>Correct Answer Letter *<input name='correct_answer' maxlength='1' required value='{html.escape(str(prev.get("correct_answer", "")))}' placeholder='A-E'></label>
         <label>Correct Answer Text *<input name='correct_answer_text' required value='{html.escape(str(prev.get("correct_answer_text", "")))}' placeholder='Paste the correct answer text'></label>
+        <label>Chosen Answer *<input name='chosen_answer' maxlength='1' required value='{html.escape(str(prev.get("chosen_answer", "")))}' placeholder='A-E'></label>
+        <label>Correct Answer *<input name='correct_answer' maxlength='1' required value='{html.escape(str(prev.get("correct_answer", "")))}' placeholder='A-E'></label>
         <label>Question Type<input name='question_type' value='{html.escape(str(prev.get("question_type", "")))}' placeholder='Strengthen / Weaken / Flaw'></label>
       </div>
       <button type='submit'>Analyze Attempt</button>
@@ -503,6 +509,7 @@ class Handler(BaseHTTPRequestHandler):
                 "chosen_answer_text": form.get("chosen_answer_text", ""),
                 "correct_answer": form.get("correct_answer", ""),
                 "correct_answer_text": form.get("correct_answer_text", ""),
+                "correct_answer": form.get("correct_answer", ""),
                 "question_type": form.get("question_type", ""),
             }
             valid, error = validate_payload(payload)
